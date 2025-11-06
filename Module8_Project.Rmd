@@ -1,0 +1,53 @@
+---
+title: "Module8_Project"
+author: "Will Brewster"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Project Update #1:
+
+We have selected the research topic #2, which will use the data on the sales of liquors in Iowa. At this point we will focus on research question #3 (Do geographies with higher median consume more alcohol in total?). A GitHub repository has been created (Group-2-Project-Option-2.3).
+So far, below is an initial data summary of the geographies, alcohol consumption, and population: 
+```{r}
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+library(readr)
+
+project_acs_counties <- read_csv("project.acs.counties.csv")
+project_acs_counties1 <- project_acs_counties |> 
+  select(county, income)
+
+#Top 5 counties by income:
+head(arrange(project_acs_counties1, desc(income)),5)
+
+#Bottom counties by income: 
+head(arrange(project_acs_counties1, (income)),5)
+
+
+project_sales_counties1 <- project_sales_counties <- read_csv("project.sales.counties.csv")
+
+#Summary of total county sales:
+project_sales_counties2 <- project_sales_counties1 |> 
+  group_by(county) |> 
+  summarize(sales = sum(sale.dollars)) |> 
+  arrange(desc(sales))
+
+#joining data sets: 
+combined <- project_acs_counties1 |> 
+  left_join(project_sales_counties2)
+
+arrange(combined, desc(income))
+arrange(combined, income)
+
+plot1 <- 
+  ggplot(combined, aes(x = income, y = sales)) +
+  geom_point()
+plot1
+
+
+```
